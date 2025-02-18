@@ -5,10 +5,13 @@ from ya_map_library import *
 
 
 class MapApp:
+    DELTA_LON = 200
+    DELTA_LAT = 90
+
     def __init__(self, size):
         self.screen = pygame.display.set_mode(size)
-        self.z = 10
-        self.coord = [123, 45]
+        self.z = 1
+        self.coord = [0, 0]
         self.update_map()
 
     def update_map(self):
@@ -28,6 +31,14 @@ class MapApp:
                         self.z = min(21, self.z + 1)
                     if event.key == pygame.K_PAGEDOWN:
                         self.z = max(0, self.z - 1)
+                    if event.key == pygame.K_LEFT:
+                        self.coord[0] = (self.coord[0] - MapApp.DELTA_LON * 2 ** -self.z + 180) % 360 - 180
+                    if event.key == pygame.K_RIGHT:
+                        self.coord[0] = (self.coord[0] + MapApp.DELTA_LON * 2 ** -self.z + 180) % 360 - 180
+                    if event.key == pygame.K_UP:
+                        self.coord[1] = min((self.coord[1] + MapApp.DELTA_LAT * 2 ** -self.z), 85)
+                    if event.key == pygame.K_DOWN:
+                        self.coord[1] = max((self.coord[1] - MapApp.DELTA_LAT * 2 ** -self.z), -85)
                     self.update_map()
 
 
