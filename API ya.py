@@ -1,5 +1,6 @@
 import io
 import pygame
+import enum
 
 from ya_map_library import *
 
@@ -7,15 +8,18 @@ from ya_map_library import *
 class MapApp:
     DELTA_LON = 200
     DELTA_LAT = 90
+    THEMES = 'light', 'dark'
+
 
     def __init__(self, size):
         self.screen = pygame.display.set_mode(size)
         self.z = 1
         self.coord = [0, 0]
+        self.theme = 0
         self.update_map()
 
     def update_map(self):
-        bytes_img = get_static_map(ll=','.join(map(str, self.coord)), z=self.z)
+        bytes_img = get_static_map(ll=','.join(map(str, self.coord)), z=self.z, thema=MapApp.THEMES[self.theme])
         img = pygame.image.load(io.BytesIO(bytes_img))
         self.screen.blit(img, (0, 0))
 
@@ -39,6 +43,8 @@ class MapApp:
                         self.coord[1] = min((self.coord[1] + MapApp.DELTA_LAT * 2 ** -self.z), 85)
                     if event.key == pygame.K_DOWN:
                         self.coord[1] = max((self.coord[1] - MapApp.DELTA_LAT * 2 ** -self.z), -85)
+                    if event.key == pygame.K_t:
+                        self.theme = 1 - self.theme
                     self.update_map()
 
 
